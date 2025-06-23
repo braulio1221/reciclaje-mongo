@@ -4,7 +4,8 @@ const { MongoClient, ObjectId } = require('mongodb');
 const app = express();
 const port = 3001;
 
-const url = 'mongodb+srv://braulio:braulio08@cluster0.ery9khc.mongodb.net/Proyecto?retryWrites=true&w=majority&tls=true';
+const url = 'mongodb+srv://braulio:braulio08@cluster0.ery9khc.mongodb.net/Proyecto?retryWrites=true&w=majority&appName=Cluster0';
+
 const dbName = 'Proyecto';
 const collectionName = 'PAEC';
 
