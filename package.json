@@ -1,0 +1,21 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "main": "app.js",
+"scripts": {
+  "start": "node app.js"
+}
+,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/braulio1221/reciclaje-mongo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/braulio1221/reciclaje-mongo/issues"
+  },
+  "homepage": "https://github.com/braulio1221/reciclaje-mongo#readme",
+  "description": ""
+}
