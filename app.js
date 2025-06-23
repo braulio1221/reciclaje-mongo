@@ -4,21 +4,29 @@ const { MongoClient, ObjectId } = require('mongodb');
 const app = express();
 const port = 3001;
 
-const url = 'mongodb+srv://braulio:braulio08@cluster0.ery9khc.mongodb.net/?retryWrites=true&w=majority&appName=<APP_NAME>';
+const url = 'mongodb+srv://braulio:braulio08@cluster0.ery9khc.mongodb.net/Proyecto?retryWrites=true&w=majority&tls=true';
 const dbName = 'Proyecto';
 const collectionName = 'PAEC';
 
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Página principal con filtros
+async function getClient() {
+const client = new MongoClient(url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  tls: true,
+  tlsAllowInvalidCertificates: true  // solo para probar, no usar en prod
+});
+await client.connect();
+}
+
+// Página principal con filtros
 app.get('/', async (req, res) => {
-    const client = new MongoClient(url);
+    const client = await getClient();
     try {
-        await client.connect();
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        // 👇 Filtros dinámicos
         const filtro = {};
         if (req.query.Id) filtro.Id = req.query.Id;
         if (req.query.Nombre) filtro.Nombre = { $regex: req.query.Nombre, $options: 'i' };
@@ -120,7 +128,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-// ✅ Formulario nuevo participante
+// Formulario nuevo participante
 app.get('/form', (req, res) => {
     res.send(`
         <html>
@@ -145,11 +153,10 @@ app.get('/form', (req, res) => {
     `);
 });
 
-// ✅ Insertar
+// Insertar participante
 app.post('/add', async (req, res) => {
-    const client = new MongoClient(url);
+    const client = await getClient();
     try {
-        await client.connect();
         const db = client.db(dbName);
         const data = {
             Id: req.body.Id,
@@ -169,11 +176,10 @@ app.post('/add', async (req, res) => {
     }
 });
 
-// ✅ Eliminar
+// Eliminar participante
 app.post('/delete/:id', async (req, res) => {
-    const client = new MongoClient(url);
+    const client = await getClient();
     try {
-        await client.connect();
         const db = client.db(dbName);
         await db.collection(collectionName).deleteOne({ _id: new ObjectId(req.params.id) });
         res.redirect('/');
@@ -182,11 +188,10 @@ app.post('/delete/:id', async (req, res) => {
     }
 });
 
-// ✅ Editar
+// Editar participante (formulario)
 app.get('/edit/:id', async (req, res) => {
-    const client = new MongoClient(url);
+    const client = await getClient();
     try {
-        await client.connect();
         const db = client.db(dbName);
         const doc = await db.collection(collectionName).findOne({ _id: new ObjectId(req.params.id) });
         if (!doc) return res.status(404).send('Participante no encontrado.');
@@ -216,11 +221,10 @@ app.get('/edit/:id', async (req, res) => {
     }
 });
 
-// ✅ Actualizar
+// Actualizar participante
 app.post('/update/:id', async (req, res) => {
-    const client = new MongoClient(url);
+    const client = await getClient();
     try {
-        await client.connect();
         const db = client.db(dbName);
         const updated = {
             Id: req.body.Id,
@@ -240,7 +244,7 @@ app.post('/update/:id', async (req, res) => {
     }
 });
 
-// ✅ Ejecutar servidor
+// Ejecutar servidor
 app.listen(port, () => {
     console.log(`🚀 Servidor corriendo en: http://localhost:${port}`);
 });
